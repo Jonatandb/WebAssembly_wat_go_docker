@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Ejemplo wat - Pruebas WebAssembly</title>
+  </head>
+  <body>
+    <h3>simple.wat:</h3>
+    <pre>
+      (module
+      (func $i (import "my_namespace" "imported_func") (param i32))
+      (func (export "exported_func")
+        i32.const 42
+        call $i
+      )
+    )
+    </pre>
+    <pre>Check the console ;-)</pre>
+    <script>
+      const importObject = {
+        my_namespace: {
+          imported_func: arg => console.log(arg),
+        }
+      }
+
+      WebAssembly.instantiateStreaming(fetch("simple.wasm"), importObject)
+        .then(obj => {
+          efunc = obj.instance.exports.exported_func;
+          console.log("Ejecutando efunc()");
+          efunc();
+        })
+    </script>
+  </body>
+</html>
